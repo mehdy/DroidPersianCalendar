@@ -70,12 +70,7 @@ public class AthanActivity extends AppCompatActivity implements View.OnClickList
 
         play();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, TimeUnit.SECONDS.toMillis(45));
+        new Handler().postDelayed(() -> finish(), TimeUnit.SECONDS.toMillis(45));
     }
 
     private void setPrayerView(String key) {

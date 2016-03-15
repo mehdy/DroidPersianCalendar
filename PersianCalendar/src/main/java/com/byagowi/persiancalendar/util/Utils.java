@@ -526,13 +526,8 @@ public class Utils {
                 .replaceAll("پ", "بی");
     }
 
-    private <T> Iterable<T> iteratorToIterable(final Iterator<T> iterator) {
-        return new Iterable<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return iterator;
-            }
-        };
+    private <T> Iterable<T> iteratorToIterable(Iterator<T> iterator) {
+        return () -> iterator;
     }
 
     public List<CityEntity> getAllCities(boolean needsSort) {
@@ -571,27 +566,24 @@ public class Utils {
             return result;
         }
 
-        final String locale = getAppLanguage();
+        String locale = getAppLanguage();
 
         CityEntity[] cities = result.toArray(new CityEntity[result.size()]);
         // Sort first by country code then city
-        Arrays.sort(cities, new Comparator<CityEntity>() {
-            @Override
-            public int compare(CityEntity l, CityEntity r) {
-                if (l.getKey().equals("")) {
-                    return -1;
-                }
-                if (r.getKey().equals(DEFAULT_CITY)) {
-                    return 1;
-                }
-                int compare = r.getCountryCode().compareTo(l.getCountryCode());
-                if (compare != 0) return compare;
-                if (locale.equals("en")) {
-                    return l.getEn().compareTo(r.getEn());
-                } else {
-                    return persianStringToArabic(l.getFa())
-                            .compareTo(persianStringToArabic(r.getFa()));
-                }
+        Arrays.sort(cities, (l, r) -> {
+            if (l.getKey().equals("")) {
+                return -1;
+            }
+            if (r.getKey().equals(DEFAULT_CITY)) {
+                return 1;
+            }
+            int compare = r.getCountryCode().compareTo(l.getCountryCode());
+            if (compare != 0) return compare;
+            if (locale.equals("en")) {
+                return l.getEn().compareTo(r.getEn());
+            } else {
+                return persianStringToArabic(l.getFa())
+                        .compareTo(persianStringToArabic(r.getFa()));
             }
         });
 
